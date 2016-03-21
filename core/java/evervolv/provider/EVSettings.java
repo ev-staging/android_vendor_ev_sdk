@@ -1778,6 +1778,13 @@ public final class EVSettings {
          */
         public static final String APP_PERFORMANCE_PROFILES_ENABLED = "app_perf_profiles_enabled";
 
+        /**
+         * Current active & enabled Weather Provider Service
+         *
+         * @hide
+         */
+        public static final String WEATHER_PROVIDER_SERVICE = "weather_provider_service";
+
         // Secure Settings end
 
         /**

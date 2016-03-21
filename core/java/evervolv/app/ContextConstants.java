@@ -62,6 +62,18 @@ public final class ContextConstants {
     public static final String PERFORMANCE_SERVICE = "performance";
 
     /**
+     * Use with {@link android.content.Context#getSystemService} to retrieve a
+     * {@link evervolv.weather.WeatherManager} to manage the weather service
+     * settings and request weather updates
+     *
+     * @see android.content.Context#getSystemService
+     * @see evervolv.weather.WeatherManager
+     *
+     * @hide
+     */
+    public static final String WEATHER_SERVICE = "weather";
+
+    /**
      * Features supported by the Vendor SDK.
      */
     public static class Features {
@@ -86,5 +98,12 @@ public final class ContextConstants {
          */
         @SdkConstant(SdkConstant.SdkConstantType.FEATURE)
         public static final String PERFORMANCE = "com.evervolv.performance";
+        /**
+         * Feature for {@link PackageManager#getSystemAvailableFeatures} and
+         * {@link PackageManager#hasSystemFeature}: The device includes the cm weather weather
+         * service utilized by the cmsdk.
+         */
+        @SdkConstant(SdkConstant.SdkConstantType.FEATURE)
+        public static final String WEATHER_SERVICES = "com.evervolv.weather";
     }
 }

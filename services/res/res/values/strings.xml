@@ -70,4 +70,14 @@
     <string name="perf_profile_perf_summary">High performance mode. Useful for applications requiring low latency and highest throughput when power consumption is not a concern</string>
     <string name="perf_profile_bias_power_summary">Favor power savings. Limit maximum CPU power and optimize for power saving at the cost of higher latency</string>
     <string name="perf_profile_bias_perf_summary">Favor performance. Reduces latency with slightly increased power consumption</string>
+
+    <!-- Weather Service strings -->
+    <string name="permlab_weather_read">read weather</string>
+    <string name="permdesc_weather_read">Allows an app to read content from the weather provider</string>
+    <string name="permlab_weather_write">update weather provider</string>
+    <string name="permdesc_weather_write">Allows an app to update the content of the weather provider</string>
+    <string name="permlab_weather_bind">binds as a weather provider service</string>
+    <string name="permdesc_weather_bind">Allows an app to be identified as a weather provider service</string>
+    <string name="permlab_weather_access_mgr">access weather service</string>
+    <string name="permdesc_weather_access_mgr">Allows an app to access the weather service in the system. Should never be needed for normal apps</string>
 </resources>
