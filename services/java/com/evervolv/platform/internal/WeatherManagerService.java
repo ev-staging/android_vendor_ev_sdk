@@ -221,6 +221,12 @@ public class WeatherManagerService extends VendorService {
             }
             return null;
         }
+
+        @Override
+        public void cancelRequest(RequestInfo info) {
+            enforcePermission();
+            processCancelRequest(info);
+        }
     };
 
     private String getComponentLabel(ComponentName componentName) {
@@ -337,6 +343,15 @@ public class WeatherManagerService extends VendorService {
         try {
             mWeatherProviderService.processCityNameLookupRequest(info);
         } catch(RemoteException e){
+        }
+    }
+
+    private void processCancelRequest(RequestInfo info) {
+        if (mIsWeatherProviderServiceBound) {
+            try {
+                mWeatherProviderService.cancelRequest(info);
+            } catch (RemoteException e) {
+            }
         }
     }
 

@@ -82,7 +82,7 @@ public final class RequestInfo implements Parcelable {
          * set, will null out the city name and weather location.
          */
         public Builder setLocation(Location location) {
-            this.mLocation = location;
+            this.mLocation = new Location(location);
             this.mCityName = null;
             this.mWeatherLocation = null;
             this.mRequestType = TYPE_GEO_LOCATION_REQ;
@@ -204,7 +204,7 @@ public final class RequestInfo implements Parcelable {
      * otherwise
      */
     public Location getLocation() {
-        return mLocation;
+        return new Location(mLocation);
     }
 
     /**
