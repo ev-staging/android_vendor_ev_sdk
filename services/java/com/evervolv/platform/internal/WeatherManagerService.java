@@ -223,9 +223,9 @@ public class WeatherManagerService extends VendorService {
         }
 
         @Override
-        public void cancelRequest(RequestInfo info) {
+        public void cancelRequest(int requestId) {
             enforcePermission();
-            processCancelRequest(info);
+            processCancelRequest(requestId);
         }
     };
 
@@ -346,10 +346,10 @@ public class WeatherManagerService extends VendorService {
         }
     }
 
-    private void processCancelRequest(RequestInfo info) {
+    private void processCancelRequest(int requestId) {
         if (mIsWeatherProviderServiceBound) {
             try {
-                mWeatherProviderService.cancelRequest(info);
+                mWeatherProviderService.cancelRequest(requestId);
             } catch (RemoteException e) {
             }
         }

@@ -19,8 +19,11 @@ package evervolv.weather;
 import android.location.Location;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 import evervolv.os.Build;
 import evervolv.provider.WeatherContract;
+
+import java.util.UUID;
 
 /**
  * This class holds the information of a request submitted to the active weather provider service
@@ -33,7 +36,7 @@ public final class RequestInfo implements Parcelable {
     private int mRequestType;
     private IRequestInfoListener mListener;
     private int mTempUnit;
-    private int mKey;
+    private String mKey;
     private boolean mIsQueryOnly;
 
     /**
@@ -152,6 +155,10 @@ public final class RequestInfo implements Parcelable {
             return this;
         }
 
+        /**
+         * Combine all of the options that have been set and return a new {@link RequestInfo} object
+         * @return {@link RequestInfo}
+         */
         public RequestInfo build() {
             RequestInfo info = new RequestInfo();
             info.mListener = this.mListener;
@@ -161,7 +168,7 @@ public final class RequestInfo implements Parcelable {
             info.mLocation = this.mLocation;
             info.mTempUnit = this.mTempUnit;
             info.mIsQueryOnly = this.mIsQueryOnly;
-            info.mKey = this.hashCode();
+            info.mKey = UUID.randomUUID().toString();
             return info;
         }
 
@@ -182,7 +189,7 @@ public final class RequestInfo implements Parcelable {
         int parcelableVersion = parcelInfo.getParcelVersion();
 
         if (parcelableVersion >= Build.EVERVOLV_VERSION_CODES.ACTINIUM) {
-            mKey = parcel.readInt();
+            mKey = parcel.readString();
             mRequestType = parcel.readInt();
             switch (mRequestType) {
                 case TYPE_WEATHER_BY_GEO_LOCATION_REQ:
@@ -294,7 +301,7 @@ public final class RequestInfo implements Parcelable {
         ParcelInfo parcelInfo = Concierge.prepareParcel(dest);
 
         // ==== ACTINIUM =====
-        dest.writeInt(mKey);
+        dest.writeString(mKey);
         dest.writeInt(mRequestType);
         switch (mRequestType) {
             case TYPE_WEATHER_BY_GEO_LOCATION_REQ:
@@ -348,18 +355,19 @@ public final class RequestInfo implements Parcelable {
 
     @Override
     public int hashCode() {
-        //The hashcode of this object was stored when it was built. This is an
-        //immutable object but we need to preserve the hashcode since this object is parcelable and
-        //it's reconstructed over IPC, and clients of this object might want to store it in a
-        //collection that relies on this code to identify the object
-        return mKey;
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((mKey != null) ? mKey.hashCode() : 0);
+        return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof RequestInfo) {
+        if (obj == null) return false;
+
+        if (getClass() == obj.getClass()) {
             RequestInfo info = (RequestInfo) obj;
-            return (info.hashCode() == this.mKey);
+            return (TextUtils.equals(mKey, info.mKey));
         }
         return false;
     }

@@ -19,6 +19,7 @@ package evervolv.weather;
 import android.annotation.NonNull;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import evervolv.os.Build;
 import evervolv.os.Concierge;
@@ -28,6 +29,8 @@ import evervolv.weatherservice.ServiceRequest;
 import evervolv.weatherservice.ServiceRequestResult;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * This class represents the weather information that a
@@ -52,8 +55,8 @@ public final class WeatherInfo implements Parcelable {
     private double mWindDirection;
     private int mWindSpeedUnit;
     private long mTimestamp;
-    private ArrayList<DayForecast> mForecastList;
-    private int mKey;
+    private List<DayForecast> mForecastList;
+    private String mKey;
 
     private WeatherInfo() {}
 
@@ -72,7 +75,7 @@ public final class WeatherInfo implements Parcelable {
         private double mWindDirection = Double.NaN;
         private int mWindSpeedUnit = WeatherContract.WeatherColumns.WindSpeedUnit.MPH;
         private long mTimestamp = -1;
-        private ArrayList<DayForecast> mForecastList = new ArrayList<>(0);
+        private List<DayForecast> mForecastList = new ArrayList<>(0);
 
         /**
          * @param cityName A valid city name. Attempting to pass null will get you an
@@ -170,7 +173,7 @@ public final class WeatherInfo implements Parcelable {
          *                  null will get you an IllegalArgumentException'
          * @return The {@link Builder} instance
          */
-        public Builder setForecast(@NonNull ArrayList<DayForecast> forecasts) {
+        public Builder setForecast(@NonNull List<DayForecast> forecasts) {
             if (forecasts == null) {
                 throw new IllegalArgumentException("Forecast list can't be null");
             }
@@ -221,7 +224,7 @@ public final class WeatherInfo implements Parcelable {
             info.mWindSpeedUnit = this.mWindSpeedUnit;
             info.mTimestamp = this.mTimestamp == -1 ? System.currentTimeMillis() : this.mTimestamp;
             info.mForecastList = this.mForecastList;
-            info.mKey = this.hashCode();
+            info.mKey = UUID.randomUUID().toString();
             return info;
         }
 
@@ -339,7 +342,7 @@ public final class WeatherInfo implements Parcelable {
      * the forecast weather for the upcoming days. If you want to know today's high and low
      * temperatures, use {@link WeatherInfo#getTodaysHigh()} and {@link WeatherInfo#getTodaysLow()}
      */
-    public ArrayList<DayForecast> getForecasts() {
+    public List<DayForecast> getForecasts() {
         return new ArrayList<>(mForecastList);
     }
 
@@ -349,7 +352,7 @@ public final class WeatherInfo implements Parcelable {
         int parcelableVersion = parcelInfo.getParcelVersion();
 
         if (parcelableVersion >= Build.CM_VERSION_CODES.ELDERBERRY) {
-            mKey = parcel.readInt();
+            mKey = parcel.readString();
             mCity = parcel.readString();
             mConditionCode = parcel.readInt();
             mTemperature = parcel.readDouble();
@@ -384,7 +387,7 @@ public final class WeatherInfo implements Parcelable {
         ParcelInfo parcelInfo = Concierge.prepareParcel(dest);
 
         // ==== ELDERBERRY =====
-        dest.writeInt(mKey);
+        dest.writeString(mKey);
         dest.writeString(mCity);
         dest.writeInt(mConditionCode);
         dest.writeDouble(mTemperature);
@@ -429,7 +432,7 @@ public final class WeatherInfo implements Parcelable {
         double mLow;
         double mHigh;
         int mConditionCode;
-        int mKey;
+        String mKey;
 
         private DayForecast() {}
 
@@ -491,7 +494,7 @@ public final class WeatherInfo implements Parcelable {
                 forecast.mLow = this.mLow;
                 forecast.mHigh = this.mHigh;
                 forecast.mConditionCode = this.mConditionCode;
-                forecast.mKey = this.hashCode();
+                forecast.mKey = UUID.randomUUID().toString();
                 return forecast;
             }
         }
@@ -528,7 +531,7 @@ public final class WeatherInfo implements Parcelable {
             ParcelInfo parcelInfo = Concierge.prepareParcel(dest);
 
             // ==== ELDERBERRY =====
-            dest.writeInt(mKey);
+            dest.writeString(mKey);
             dest.writeDouble(mLow);
             dest.writeDouble(mHigh);
             dest.writeInt(mConditionCode);
@@ -556,7 +559,7 @@ public final class WeatherInfo implements Parcelable {
             int parcelableVersion = parcelInfo.getParcelVersion();
 
             if (parcelableVersion >= Build.CM_VERSION_CODES.ELDERBERRY) {
-                mKey = parcel.readInt();
+                mKey = parcel.readString();
                 mLow = parcel.readDouble();
                 mHigh = parcel.readDouble();
                 mConditionCode = parcel.readInt();
@@ -577,18 +580,19 @@ public final class WeatherInfo implements Parcelable {
 
         @Override
         public int hashCode() {
-            //The hashcode of this object was stored when it was built. This is an
-            //immutable object but we need to preserve the hashcode since this object is parcelable
-            //and it's reconstructed over IPC, and clients of this object might want to store it in
-            //a collection that relies on this code to identify the object
-            return mKey;
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((mKey != null) ? mKey.hashCode() : 0);
+            return result;
         }
 
         @Override
         public boolean equals(Object obj) {
-            if (obj instanceof DayForecast) {
+            if (obj == null) return false;
+
+            if (getClass() == obj.getClass()) {
                 DayForecast forecast = (DayForecast) obj;
-                return (forecast.hashCode() == this.mKey);
+                return (TextUtils.equals(mKey, forecast.mKey));
             }
             return false;
         }
@@ -616,18 +620,19 @@ public final class WeatherInfo implements Parcelable {
 
     @Override
     public int hashCode() {
-        //The hashcode of this object was stored when it was built. This is an
-        //immutable object but we need to preserve the hashcode since this object is parcelable and
-        //it's reconstructed over IPC, and clients of this object might want to store it in a
-        //collection that relies on this code to identify the object
-        return mKey;
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((mKey != null) ? mKey.hashCode() : 0);
+        return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof WeatherInfo) {
+        if (obj == null) return false;
+
+        if (getClass() == obj.getClass()) {
             WeatherInfo info = (WeatherInfo) obj;
-            return (info.hashCode() == this.mKey);
+            return (TextUtils.equals(mKey, info.mKey));
         }
         return false;
     }
