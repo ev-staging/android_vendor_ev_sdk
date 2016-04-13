@@ -27,6 +27,8 @@ import android.os.ServiceManager;
 import android.util.ArraySet;
 
 import evervolv.app.ContextConstants;
+import evervolv.provider.EVSettings;
+import evervolv.provider.WeatherContract;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -143,9 +145,14 @@ public class WeatherManager {
         }
 
         try {
+            int tempUnit = EVSettings.Global.getInt(mContext.getContentResolver(),
+                    EVSettings.Global.WEATHER_TEMPERATURE_UNIT,
+                        WeatherContract.WeatherColumns.TempUnit.FAHRENHEIT);
+
             RequestInfo info = new RequestInfo
                     .Builder(mRequestInfoListener)
                     .setLocation(location)
+                    .setTemperatureUnit(tempUnit)
                     .build();
             if (listener != null) mWeatherUpdateRequestListeners.put(info, listener);
             sWeatherManagerService.updateWeather(info);
@@ -176,9 +183,14 @@ public class WeatherManager {
         }
 
         try {
+            int tempUnit = EVSettings.Global.getInt(mContext.getContentResolver(),
+                    EVSettings.Global.WEATHER_TEMPERATURE_UNIT,
+                        WeatherContract.WeatherColumns.TempUnit.FAHRENHEIT);
+
             RequestInfo info = new RequestInfo
                     .Builder(mRequestInfoListener)
                     .setWeatherLocation(weatherLocation)
+                    .setTemperatureUnit(tempUnit)
                     .build();
             if (listener != null) mWeatherUpdateRequestListeners.put(info, listener);
             sWeatherManagerService.updateWeather(info);
