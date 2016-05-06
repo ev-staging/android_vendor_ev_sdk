@@ -19,4 +19,7 @@
     <!-- Defaults for Settings.Secure.DEV_FORCE_SHOW_NAVBAR. -->
     <integer name="def_force_disable_navkeys">0</integer>
 
+    <!-- Default temperature unit (CELSIUS) -->
+    <integer name="def_temperature_unit">2</integer>
+
 </resources>

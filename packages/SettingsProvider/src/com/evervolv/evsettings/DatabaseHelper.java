@@ -49,7 +49,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     private static final boolean LOCAL_LOGV = false;
 
     private static final String DATABASE_NAME = "evervolv.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     public static class TableNames {
         public static final String TABLE_SYSTEM = "system";
@@ -171,6 +171,24 @@ public class DatabaseHelper extends SQLiteOpenHelper{
             }
         }
 
+        if (upgradeVersion < 3) {
+            db.beginTransaction();
+            SQLiteStatement stmt = null;
+            try {
+                stmt = db.compileStatement("INSERT INTO global(name,value)"
+                        + " VALUES(?,?);");
+                loadIntegerSetting(stmt, EVSettings.Global.WEATHER_TEMPERATURE_UNIT,
+                        R.integer.def_temperature_unit);
+                db.setTransactionSuccessful();
+            } finally {
+                if (stmt != null) stmt.close();
+                db.endTransaction();
+            }
+            upgradeVersion = 5;
+        }
+
+        // *** Remember to update DATABASE_VERSION above!
+
         if (upgradeVersion < newVersion) {
             Log.w(TAG, "Got stuck trying to upgrade db. Old version: " + oldVersion
                     + ", version stuck at: " +  upgradeVersion + ", new version: "
@@ -279,6 +297,9 @@ public class DatabaseHelper extends SQLiteOpenHelper{
             stmt = db.compileStatement("INSERT OR IGNORE INTO global(name,value)"
                     + " VALUES(?,?);");
             // Global
+            loadIntegerSetting(stmt,
+                    EVSettings.Global.WEATHER_TEMPERATURE_UNIT,
+                    R.integer.def_temperature_unit);
         } finally {
             if (stmt != null) stmt.close();
         }
