@@ -76,4 +76,7 @@
     <java-symbol type="string" name="perf_profile_bias_perf_summary" />
 
     <java-symbol type="bool" name="config_waitForMpctlOnBoot" />
+
+    <!-- On-device lights (LED) capabilities -->
+    <java-symbol type="integer" name="config_deviceLightCapabilities" />
 </resources>
